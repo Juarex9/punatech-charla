@@ -28,10 +28,18 @@ export const slides: Slide[] = [
     title: '¿Quién soy?',
     speaker: 'Agustín Juárez',
     role: 'Software Developer & AI Engineer',
-    subtitle: 'Especialista en desarrollo de software e implementación de soluciones con agentes de IA.',
+    meta: 'SaltaDev · Comunidad tech de Salta',
+    subtitle: 'Me dedico a desarrollar software e implementar soluciones con agentes de IA. En SaltaDev ayudo a organizar Puna Tech y a conectar a quienes quieren construir con tecnología en la provincia.',
   },
   {
     n: 3,
+    layout: 'bridge',
+    title: 'IA, BLOCKCHAIN?',
+    subtitle: 'Suenan futuristas. Pero pueden estar más cerca de nosotros de lo que pensamos.',
+    tag: 'Tecnologías que ya escuchamos · aplicables al campo',
+  },
+  {
+    n: 4,
     layout: 'comparison',
     title: 'IA vs Agente de IA',
     cols: [
@@ -50,7 +58,7 @@ export const slides: Slide[] = [
     ],
   },
   {
-    n: 4,
+    n: 5,
     layout: 'grid',
     title: 'Los agentes de IA en el campo',
     items: [
@@ -61,7 +69,7 @@ export const slides: Slide[] = [
     ],
   },
   {
-    n: 5,
+    n: 6,
     layout: 'bullets',
     title: 'Blockchain',
     items: [
@@ -71,7 +79,7 @@ export const slides: Slide[] = [
     ],
   },
   {
-    n: 6,
+    n: 7,
     layout: 'flow',
     title: 'Entendiendo a un agente',
     items: [
@@ -85,7 +93,7 @@ export const slides: Slide[] = [
     note: 'No es magia. Es alguien que escucha, investiga, y te aconseja.',
   },
   {
-    n: 7,
+    n: 8,
     layout: 'apps',
     title: 'Apps reales',
     items: [
@@ -94,7 +102,7 @@ export const slides: Slide[] = [
     ],
   },
   {
-    n: 8,
+    n: 9,
     layout: 'no-code',
     title: '¿Y si no sé programar?',
     subtitle: 'No se necesita ser programador. La clave es saber preguntar bien.',
@@ -106,7 +114,7 @@ export const slides: Slide[] = [
     ],
   },
   {
-    n: 9,
+    n: 10,
     layout: 'future',
     title: 'El futuro del agro',
     cols: [
@@ -128,7 +136,7 @@ export const slides: Slide[] = [
     ],
   },
   {
-    n: 10,
+    n: 11,
     layout: 'closing',
     title: 'Gracias por ver',
     footer: 'www.agustinjz.dev',

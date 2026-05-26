@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { slides, Slide } from '@/lib/slides'
+import { assets } from '@/lib/assets'
 
 // ── Tokens Puna Tech ──
 const C = {
@@ -49,25 +50,99 @@ function Cover({ s }: { s: Slide }) {
   )
 }
 
+function Bridge({ s }: { s: Slide }) {
+  return (
+    <div className="slide bridge">
+      <div
+        className="bridge-bg"
+        style={{ backgroundImage: `url(${assets.bridge.background})` }}
+      />
+      <div className="bridge-bg-overlay" />
+      <motion.div
+        className="bridge-inner"
+        initial={{ opacity: 0, scale: 0.92 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="section-label">// CONECTANDO IDEAS</div>
+        <h1>
+          <span className="bridge-ia">IA</span>
+          <span className="bridge-comma">,</span>
+          <span className="bridge-chain">BLOCKCHAIN</span>
+          <span className="bridge-q">?</span>
+        </h1>
+        {s.subtitle && <p className="bridge-subtitle">{s.subtitle}</p>}
+        {s.tag && <p className="bridge-tag">{s.tag}</p>}
+
+        <div className="bridge-logos">
+          <motion.div
+            className="bridge-group bridge-group-ia"
+            initial={{ opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.35, duration: 0.5 }}
+          >
+            <span className="bridge-group-label">Inteligencia Artificial</span>
+            <div className="bridge-group-items">
+              {assets.bridge.ia.map((img) => (
+                <div key={img.src} className="bridge-logo-wrap">
+                  <img src={img.src} alt={img.alt} className="bridge-logo" />
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          <div className="bridge-divider" aria-hidden>+</div>
+
+          <motion.div
+            className="bridge-group bridge-group-chain"
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.45, duration: 0.5 }}
+          >
+            <span className="bridge-group-label">Blockchain</span>
+            <div className="bridge-group-items">
+              {assets.bridge.blockchain.map((img) => (
+                <div key={img.src} className="bridge-logo-wrap">
+                  <img src={img.src} alt={img.alt} className="bridge-logo" />
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
 function Speaker({ s }: { s: Slide }) {
   return (
     <div className="slide speaker">
       <div className="section-label">// QUIÉN SOY</div>
       <div className="speaker-content">
-        <div className="speaker-avatar">
-          <div className="avatar-ring">
-            <div className="avatar-initials">AJ</div>
+        <motion.div
+          className="speaker-photo-wrap"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="speaker-photo-frame">
+            <img
+              src={assets.speaker}
+              alt="Agustín Juárez"
+              className="speaker-photo"
+            />
           </div>
           <div className="agro-ring" />
-        </div>
+        </motion.div>
         <motion.div
           className="speaker-text"
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
+          transition={{ delay: 0.25, duration: 0.6 }}
         >
           <h2>{s.speaker}</h2>
           <p className="role">{s.role}</p>
+          {s.meta && <p className="speaker-meta">{s.meta}</p>}
           <p className="bio">{s.subtitle}</p>
         </motion.div>
       </div>
@@ -76,6 +151,8 @@ function Speaker({ s }: { s: Slide }) {
 }
 
 function Comparison({ s }: { s: Slide }) {
+  const logos = [assets.comparison.chatbot, assets.comparison.agent]
+
   return (
     <div className="slide comparison">
       <div className="section-label">// IA VS AGENTE DE IA</div>
@@ -89,7 +166,22 @@ function Comparison({ s }: { s: Slide }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: ci * 0.2, duration: 0.5 }}
           >
-            <div className="col-header">{ci === 0 ? 'IA TRADICIONAL' : 'AGENTE DE IA'}</div>
+            <div className="comparison-logo-wrap">
+              <img
+                src={logos[ci].src}
+                alt={logos[ci].alt}
+                className={`comparison-logo ${ci === 0 ? 'logo-chatbot' : 'logo-agent'}`}
+              />
+            </div>
+            <div className="col-header">
+              {ci === 0 ? 'CHATBOT CONVENCIONAL' : 'AGENTE DE IA'}
+            </div>
+            {ci === 0 && (
+              <p className="col-example">ej. ChatGPT</p>
+            )}
+            {ci === 1 && (
+              <p className="col-example col-example-agent">ej. OpenClaw</p>
+            )}
             {col.map((item, i) => (
               <div key={i} className="col-item">
                 <span className="check">→</span> {item}
@@ -130,22 +222,36 @@ function Bullets({ s }: { s: Slide }) {
     <div className="slide bullets">
       <div className="section-label">// BLOCKCHAIN</div>
       <h2>{s.title}</h2>
-      <div className="bullet-list">
-        {s.items?.map(([title, desc], i) => (
-          <motion.div
-            key={i}
-            className="bullet-row"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.15, duration: 0.4 }}
-          >
-            <div className="bullet-icon">⬡</div>
-            <div>
-              <strong>{title}</strong>
-              <p>{desc}</p>
-            </div>
-          </motion.div>
-        ))}
+      <div className="bullets-layout">
+        <motion.div
+          className="blockchain-hero-wrap"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <img
+            src={assets.blockchain.hero.src}
+            alt={assets.blockchain.hero.alt}
+            className="blockchain-hero"
+          />
+        </motion.div>
+        <div className="bullet-list">
+          {s.items?.map(([title, desc], i) => (
+            <motion.div
+              key={i}
+              className="bullet-row"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.15, duration: 0.4 }}
+            >
+              <div className="bullet-icon">⬡</div>
+              <div>
+                <strong>{title}</strong>
+                <p>{desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -272,30 +378,85 @@ function Future({ s }: { s: Slide }) {
 }
 
 function Closing({ s }: { s: Slide }) {
+  const [qrLoaded, setQrLoaded] = useState(false)
+
   return (
     <div className="slide closing">
-      <motion.h1
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        {s.title}
-      </motion.h1>
-      <motion.p
-        className="closing-url"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-      >
-        🌐 {s.footer}
-      </motion.p>
       <motion.div
-        className="closing-tag"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
+        className="closing-inner"
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        {s.tag}
+        <motion.h1
+          initial={{ scale: 0.92, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          {s.title}
+        </motion.h1>
+
+        <motion.div
+          className="closing-qr-slot"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.25, duration: 0.5 }}
+        >
+          {!qrLoaded && (
+            <div className="closing-qr-placeholder">
+              <span className="closing-qr-icon" aria-hidden>⌗</span>
+              <span className="closing-qr-label">Redes de contacto</span>
+              <span className="closing-qr-hint">public/contacto-qr.png</span>
+            </div>
+          )}
+          <img
+            src={assets.closing.qr}
+            alt="QR — redes de contacto"
+            className="closing-qr"
+            onLoad={() => setQrLoaded(true)}
+            onError={() => setQrLoaded(false)}
+            style={{ display: qrLoaded ? 'block' : 'none' }}
+          />
+        </motion.div>
+
+        <motion.p
+          className="closing-url"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+        >
+          🌐 {s.footer}
+        </motion.p>
+        <motion.div
+          className="closing-tag"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          {s.tag}
+        </motion.div>
+
+        <motion.footer
+          className="closing-footer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+        >
+          <div className="closing-logo-wrap">
+            <img
+              src={assets.closing.punatech.src}
+              alt={assets.closing.punatech.alt}
+              className="closing-logo closing-logo-puna"
+            />
+          </div>
+          <div className="closing-logo-wrap">
+            <img
+              src={assets.closing.saltadev.src}
+              alt={assets.closing.saltadev.alt}
+              className="closing-logo closing-logo-salta"
+            />
+          </div>
+        </motion.footer>
       </motion.div>
     </div>
   )
@@ -305,6 +466,7 @@ function LayoutRenderer({ slide }: { slide: Slide }) {
   switch (slide.layout) {
     case 'cover':    return <Cover s={slide} />
     case 'speaker':  return <Speaker s={slide} />
+    case 'bridge':   return <Bridge s={slide} />
     case 'comparison': return <Comparison s={slide} />
     case 'grid':    return <GridSlide s={slide} />
     case 'bullets': return <Bullets s={slide} />
@@ -321,6 +483,7 @@ function LayoutRenderer({ slide }: { slide: Slide }) {
 export default function CharlaPage() {
   const [current, setCurrent] = useState(0)
   const [dir, setDir] = useState(1)
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
   const prev = useCallback(() => {
     if (current > 0) { setDir(-1); setCurrent(c => c - 1) }
@@ -330,14 +493,29 @@ export default function CharlaPage() {
     if (current < slides.length - 1) { setDir(1); setCurrent(c => c + 1) }
   }, [current])
 
+  const toggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen?.()
+    } else {
+      document.exitFullscreen?.()
+    }
+  }, [])
+
+  useEffect(() => {
+    const onFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', onFullscreenChange)
+    return () => document.removeEventListener('fullscreenchange', onFullscreenChange)
+  }, [])
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); next() }
       if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp') { e.preventDefault(); prev() }
+      if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggleFullscreen() }
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [next, prev])
+  }, [next, prev, toggleFullscreen])
 
   const variant = {
     enter: (d: number) => ({ opacity: 0, x: d > 0 ? 60 : -60 }),
@@ -347,9 +525,23 @@ export default function CharlaPage() {
 
   return (
     <main className="charla">
+      {/* Ambiente agro — topografía + grain */}
+      <div className="agro-ambient" aria-hidden>
+        <div className="agro-topo" />
+        <div className="agro-grain" />
+      </div>
+
+      {/* Branding */}
+      <header className="charla-brand">
+        <span className="brand-dot" />
+        <span className="brand-name">PUNA TECH</span>
+        <span className="brand-sep">·</span>
+        <span className="brand-topic">IA en el agro</span>
+      </header>
+
       {/* Nav */}
       <nav className="charla-nav">
-        <button onClick={prev} disabled={current === 0} className="nav-btn">
+        <button onClick={prev} disabled={current === 0} className="nav-btn" aria-label="Slide anterior">
           ←
         </button>
         <div className="nav-dots">
@@ -358,13 +550,27 @@ export default function CharlaPage() {
               key={i}
               className={`dot ${i === current ? 'active' : ''}`}
               onClick={() => { setDir(i > current ? 1 : -1); setCurrent(i) }}
+              aria-label={`Ir a slide ${i + 1}`}
             />
           ))}
         </div>
-        <button onClick={next} disabled={current === slides.length - 1} className="nav-btn">
+        <button onClick={next} disabled={current === slides.length - 1} className="nav-btn" aria-label="Slide siguiente">
           →
         </button>
       </nav>
+
+      {/* Fullscreen toggle */}
+      <button
+        className="fullscreen-btn"
+        onClick={toggleFullscreen}
+        aria-label={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
+        title="Pantalla completa (F)"
+      >
+        {isFullscreen ? '⤡' : '⤢'}
+      </button>
+
+      {/* Keyboard hint */}
+      <div className="keyboard-hint">← → navegar · F pantalla completa</div>
 
       {/* Slide counter */}
       <div className="slide-counter">
