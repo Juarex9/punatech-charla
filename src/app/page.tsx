@@ -1,192 +1,136 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { slides, Slide } from '@/lib/slides'
 import { assets } from '@/lib/assets'
 
-// ── Tokens Puna Tech ──
-const C = {
-  base: '#060404',
-  surface: '#111111',
-  surface2: '#0A0404',
-  primary: '#E61C1C',
-  lava: '#FF5E00',
-  amber: '#FF9D00',
-  high: '#F2F2F2',
-  subtitle: '#C8C8C8',
-  muted: '#B3B3B3',
-  dim: '#7D7D7D',
-  border: '#1A1A1A',
-  agro: '#4CAF50',     // verde agro
-  agroDark: '#2E7D32',
-}
-
-const F = {
-  display: "'Barlow Condensed', sans-serif",
-  body: "'DM Sans', sans-serif",
-  mono: "'JetBrains Mono', monospace",
-}
-
-// ── Layouts por tipo ──
-
-function Cover({ s }: { s: Slide }) {
+function SlideTitle({ children, center }: { children: React.ReactNode; center?: boolean }) {
   return (
-    <div className="slide cover">
-      <div className="cover-bg" />
-      <motion.div
-        className="cover-inner"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div className="tag-line">PUNA TECH 2026</div>
-        <h1>{s.title}</h1>
-        <p className="subtitle">{s.subtitle}</p>
-        <div className="cover-tag">{s.tag}</div>
-      </motion.div>
-      <div className="cover-decoration" />
+    <div className={`canva-title-wrap${center ? ' canva-title-wrap--center' : ''}`}>
+      <h2 className="canva-title">{children}</h2>
     </div>
   )
 }
 
-function Bridge({ s }: { s: Slide }) {
+function IntroScreen({ onStart }: { onStart: () => void }) {
   return (
-    <div className="slide bridge">
-      <div
-        className="bridge-bg"
-        style={{ backgroundImage: `url(${assets.bridge.background})` }}
-      />
-      <div className="bridge-bg-overlay" />
-      <motion.div
-        className="bridge-inner"
-        initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div className="section-label">// CONECTANDO IDEAS</div>
-        <h1>
-          <span className="bridge-ia">IA</span>
-          <span className="bridge-comma">,</span>
-          <span className="bridge-chain">BLOCKCHAIN</span>
-          <span className="bridge-q">?</span>
-        </h1>
-        {s.subtitle && <p className="bridge-subtitle">{s.subtitle}</p>}
-        {s.tag && <p className="bridge-tag">{s.tag}</p>}
-
-        <div className="bridge-logos">
-          <motion.div
-            className="bridge-group bridge-group-ia"
-            initial={{ opacity: 0, x: -24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.35, duration: 0.5 }}
-          >
-            <span className="bridge-group-label">Inteligencia Artificial</span>
-            <div className="bridge-group-items">
-              {assets.bridge.ia.map((img) => (
-                <div key={img.src} className="bridge-logo-wrap">
-                  <img src={img.src} alt={img.alt} className="bridge-logo" />
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          <div className="bridge-divider" aria-hidden>+</div>
-
-          <motion.div
-            className="bridge-group bridge-group-chain"
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.45, duration: 0.5 }}
-          >
-            <span className="bridge-group-label">Blockchain</span>
-            <div className="bridge-group-items">
-              {assets.bridge.blockchain.map((img) => (
-                <div key={img.src} className="bridge-logo-wrap">
-                  <img src={img.src} alt={img.alt} className="bridge-logo" />
-                </div>
-              ))}
-            </div>
-          </motion.div>
+    <motion.button
+      type="button"
+      className="intro-screen"
+      onClick={onStart}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      aria-label="Comenzar presentación"
+    >
+      <img src={assets.cerro} alt="" className="intro-bg" draggable={false} />
+      <div className="intro-overlay" />
+      <div className="intro-content">
+        <div className="intro-brand">
+          <span className="brand-dot" />
+          <span>PUNA TECH 2026</span>
         </div>
-      </motion.div>
-    </div>
+        <h1 className="intro-title">{assets.intro.title}</h1>
+        <p className="intro-subtitle">{assets.intro.subtitle}</p>
+        <span className="intro-cta">Click o espacio para comenzar</span>
+      </div>
+    </motion.button>
   )
 }
 
 function Speaker({ s }: { s: Slide }) {
   return (
-    <div className="slide speaker">
-      <div className="section-label">// QUIÉN SOY</div>
-      <div className="speaker-content">
+    <div className="slide slide-canva speaker">
+      <div className="canva-split">
         <motion.div
-          className="speaker-photo-wrap"
-          initial={{ opacity: 0, x: -30 }}
+          className="canva-split-text"
+          initial={{ opacity: 0, x: -24 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.55 }}
         >
-          <div className="speaker-photo-frame">
-            <img
-              src={assets.speaker}
-              alt="Agustín Juárez"
-              className="speaker-photo"
-            />
-          </div>
-          <div className="agro-ring" />
+          <SlideTitle>{s.title}</SlideTitle>
+          <p className="speaker-byline">
+            <strong>{s.speaker}</strong>
+            <span className="speaker-sep">|</span>
+            {s.role}
+          </p>
+          {s.meta && <p className="speaker-meta">{s.meta}</p>}
+          <p className="speaker-bio">{s.subtitle}</p>
         </motion.div>
         <motion.div
-          className="speaker-text"
-          initial={{ opacity: 0, x: 30 }}
+          className="canva-split-media"
+          initial={{ opacity: 0, x: 24 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.25, duration: 0.6 }}
+          transition={{ delay: 0.15, duration: 0.55 }}
         >
-          <h2>{s.speaker}</h2>
-          <p className="role">{s.role}</p>
-          {s.meta && <p className="speaker-meta">{s.meta}</p>}
-          <p className="bio">{s.subtitle}</p>
+          <img src={assets.speaker} alt={s.speaker ?? ''} className="speaker-photo-canva" />
         </motion.div>
       </div>
     </div>
   )
 }
 
-function Comparison({ s }: { s: Slide }) {
-  const logos = [assets.comparison.chatbot, assets.comparison.agent]
+function Bridge({ s }: { s: Slide }) {
+  const logos = [
+    { ...assets.bridge.ia[1], pos: 'pos-claude' },
+    { ...assets.bridge.ia[0], pos: 'pos-chatgpt' },
+    { ...assets.bridge.ia[2], pos: 'pos-gemini' },
+    { ...assets.bridge.blockchain[1], pos: 'pos-ethereum' },
+    { ...assets.bridge.blockchain[0], pos: 'pos-bitcoin' },
+  ]
 
   return (
-    <div className="slide comparison">
-      <div className="section-label">// IA VS AGENTE DE IA</div>
-      <h2>{s.title}</h2>
+    <div className="slide slide-canva bridge">
+      <motion.div
+        className="bridge-canva-inner"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55 }}
+      >
+        <SlideTitle center>{s.title}</SlideTitle>
+        {s.subtitle && <p className="bridge-canva-sub">{s.subtitle}</p>}
+        {s.tag && <p className="bridge-canva-tag">{s.tag}</p>}
+        <div className="bridge-logos-scatter">
+          {logos.map((img) => (
+            <div key={img.src} className={`bridge-scatter-item ${img.pos}`}>
+              <img src={img.src} alt={img.alt} className="bridge-scatter-logo" />
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
+function Comparison({ s }: { s: Slide }) {
+  const logos = [assets.comparison.chatbot, assets.comparison.agent]
+  const names = ['ChatGPT', 'OpenClaw']
+
+  return (
+    <div className="slide slide-canva comparison">
+      <SlideTitle>{s.title}</SlideTitle>
       <div className="comparison-grid">
         {s.cols?.map((col, ci) => (
           <motion.div
             key={ci}
-            className={`comparison-col col-${ci}`}
-            initial={{ opacity: 0, y: 20 }}
+            className="comparison-col-canva"
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: ci * 0.2, duration: 0.5 }}
+            transition={{ delay: ci * 0.12, duration: 0.45 }}
           >
-            <div className="comparison-logo-wrap">
-              <img
-                src={logos[ci].src}
-                alt={logos[ci].alt}
-                className={`comparison-logo ${ci === 0 ? 'logo-chatbot' : 'logo-agent'}`}
-              />
-            </div>
-            <div className="col-header">
-              {ci === 0 ? 'CHATBOT CONVENCIONAL' : 'AGENTE DE IA'}
-            </div>
-            {ci === 0 && (
-              <p className="col-example">ej. ChatGPT</p>
-            )}
-            {ci === 1 && (
-              <p className="col-example col-example-agent">ej. OpenClaw</p>
-            )}
-            {col.map((item, i) => (
-              <div key={i} className="col-item">
-                <span className="check">→</span> {item}
-              </div>
-            ))}
+            <img
+              src={logos[ci].src}
+              alt={logos[ci].alt}
+              className={`comparison-logo-canva ${ci === 1 ? 'logo-agent' : ''}`}
+            />
+            <p className="comparison-name">{names[ci]}</p>
+            <ul className="comparison-list">
+              {col.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
           </motion.div>
         ))}
       </div>
@@ -196,22 +140,22 @@ function Comparison({ s }: { s: Slide }) {
 
 function GridSlide({ s }: { s: Slide }) {
   return (
-    <div className="slide grid-slide">
-      <div className="section-label">// AGENTES EN EL CAMPO</div>
-      <h2>{s.title}</h2>
-      <div className="card-grid">
-        {s.items?.map(([num, label], i) => (
-          <motion.div
-            key={i}
-            className="card"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: i * 0.1, duration: 0.4 }}
-          >
-            <span className="card-num">{num}</span>
-            <p className="card-label">{label}</p>
-          </motion.div>
-        ))}
+    <div className="slide slide-canva grid-slide">
+      <div className="canva-split canva-split--media-left">
+        <div className="canva-split-media canva-split-media--tall">
+          <img src={assets.cerro} alt="" className="canva-side-photo" />
+        </div>
+        <div className="canva-split-text">
+          <SlideTitle>{s.title}</SlideTitle>
+          <ul className="canva-numbered-list">
+            {s.items?.map(([num, label]) => (
+              <li key={num}>
+                <span className="canva-num">{num}</span>
+                <span>{label}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   )
@@ -219,39 +163,23 @@ function GridSlide({ s }: { s: Slide }) {
 
 function Bullets({ s }: { s: Slide }) {
   return (
-    <div className="slide bullets">
-      <div className="section-label">// BLOCKCHAIN</div>
-      <h2>{s.title}</h2>
-      <div className="bullets-layout">
-        <motion.div
-          className="blockchain-hero-wrap"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
+    <div className="slide slide-canva bullets">
+      <SlideTitle>{s.title}</SlideTitle>
+      <div className="canva-split canva-split--bullets">
+        <div className="canva-split-media">
           <img
             src={assets.blockchain.hero.src}
             alt={assets.blockchain.hero.alt}
-            className="blockchain-hero"
+            className="blockchain-img-canva"
           />
-        </motion.div>
-        <div className="bullet-list">
-          {s.items?.map(([title, desc], i) => (
-            <motion.div
-              key={i}
-              className="bullet-row"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.15, duration: 0.4 }}
-            >
-              <div className="bullet-icon">⬡</div>
-              <div>
-                <strong>{title}</strong>
-                <p>{desc}</p>
-              </div>
-            </motion.div>
-          ))}
         </div>
+        <ul className="canva-bullet-list">
+          {s.items?.map(([title, desc]) => (
+            <li key={title}>
+              <strong>{title}:</strong> {desc}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   )
@@ -259,56 +187,47 @@ function Bullets({ s }: { s: Slide }) {
 
 function Flow({ s }: { s: Slide }) {
   return (
-    <div className="slide flow">
-      <div className="section-label">// ENTRENDIENDO UN AGENTE</div>
-      <h2>{s.title}</h2>
-      <div className="flow-steps">
-        {s.items?.map(([num, label], i) => (
-          <motion.div
-            key={i}
-            className="flow-step"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.12, duration: 0.4 }}
-          >
-            <div className="flow-num">{num}</div>
-            <div className="flow-label">{label}</div>
-            {i < (s.items?.length ?? 0) - 1 && <div className="flow-arrow">↓</div>}
-          </motion.div>
-        ))}
+    <div className="slide slide-canva flow">
+      <div className="canva-split">
+        <div className="canva-split-text">
+          <SlideTitle>{s.title}</SlideTitle>
+          <div className="flow-grid">
+            {s.items?.map(([num, label]) => (
+              <div key={num} className="flow-grid-item">
+                <span className="canva-num">{num}</span>
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+          {s.note && <p className="flow-note-canva">{s.note}</p>}
+        </div>
+        <div className="canva-split-media canva-split-media--tall">
+          <img src={assets.cerro} alt="" className="canva-side-photo" />
+        </div>
       </div>
-      <motion.div
-        className="flow-note"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8, duration: 0.5 }}
-      >
-        💡 {s.note}
-      </motion.div>
     </div>
   )
 }
 
 function Apps({ s }: { s: Slide }) {
   return (
-    <div className="slide apps">
-      <div className="section-label">// PROYECTOS REALES</div>
-      <h2>{s.title}</h2>
-      <div className="apps-grid">
-        {s.items?.map(([name, desc], i) => (
-          <motion.div
-            key={i}
-            className="app-card"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.2, duration: 0.5 }}
-          >
-            <div className="app-icon">{i === 0 ? '🌾' : '🍇'}</div>
-            <h3>{name}</h3>
-            <p>{desc}</p>
-            <div className="app-badge">Proyecto real</div>
-          </motion.div>
-        ))}
+    <div className="slide slide-canva apps">
+      <div className="canva-split canva-split--media-left">
+        <div className="canva-split-text">
+          <SlideTitle>{s.title}</SlideTitle>
+          <ul className="canva-numbered-list canva-numbered-list--large">
+            {s.items?.map(([name], i) => (
+              <li key={name}>
+                <span className="canva-num">{String(i + 1).padStart(2, '0')}</span>
+                <span>{name}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="canva-split-media canva-split-media--stack">
+          <img src={assets.cerro} alt="" className="canva-side-photo canva-side-photo--half" />
+          <img src={assets.speaker} alt="" className="canva-side-photo canva-side-photo--half" />
+        </div>
       </div>
     </div>
   )
@@ -316,62 +235,45 @@ function Apps({ s }: { s: Slide }) {
 
 function NoCode({ s }: { s: Slide }) {
   return (
-    <div className="slide no-code">
-      <div className="section-label">// Y SI NO SÉ PROGRAMAR?</div>
-      <h2>{s.title}</h2>
-      <p className="no-code-subtitle">{s.subtitle}</p>
-      <div className="chatbot-demo">
-        <div className="chatbot-header">
-          <div className="chatbot-dots"><span /><span /><span /></div>
-          <span>Asistente del Campo</span>
+    <div className="slide slide-canva no-code">
+      <SlideTitle>{s.title}</SlideTitle>
+      <div className="canva-split canva-split--media-left">
+        <div className="canva-split-media">
+          <img src={assets.cerro} alt="" className="canva-side-photo" />
         </div>
-        <div className="chatbot-body">
-          {s.items?.map(([icon, label], i) => (
-            <motion.div
-              key={i}
-              className="chatbot-item"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <span className="chatbot-icon">{icon}</span>
-              <span>{label}</span>
-              <div className="chatbot-status">usable hoy</div>
-            </motion.div>
+        <ul className="canva-simple-list">
+          {s.items?.map(([label]) => (
+            <li key={label}>{label}</li>
           ))}
-        </div>
-        <div className="chatbot-input">
-          <span>Escribí tu pregunta...</span>
-          <button>Enviar</button>
-        </div>
+        </ul>
       </div>
+      {s.subtitle && <p className="no-code-footer">{s.subtitle}</p>}
     </div>
   )
 }
 
 function Future({ s }: { s: Slide }) {
   return (
-    <div className="slide future">
-      <div className="section-label">// EL FUTURO</div>
-      <h2>{s.title}</h2>
-      <div className="future-grid">
-        {s.cols?.map((col, ci) => (
-          <motion.div
-            key={ci}
-            className={`future-col col-${ci}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: ci * 0.2 }}
-          >
-            <div className="future-header">{col[0]}</div>
-            {col.slice(1).map((item, i) => (
-              <div key={i} className="future-item">
-                <span className="future-dot" />
-                {item}
+    <div className="slide slide-canva future">
+      <div className="canva-split canva-split--media-left">
+        <div className="canva-split-media canva-split-media--tall">
+          <img src={assets.cerro} alt="" className="canva-side-photo" />
+        </div>
+        <div className="canva-split-text">
+          <SlideTitle>{s.title}</SlideTitle>
+          <div className="future-cols">
+            {s.cols?.map((col) => (
+              <div key={col[0]} className="future-col-canva">
+                <h3>{col[0]}</h3>
+                <ul>
+                  {col.slice(1).map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
               </div>
             ))}
-          </motion.div>
-        ))}
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -381,82 +283,43 @@ function Closing({ s }: { s: Slide }) {
   const [qrLoaded, setQrLoaded] = useState(false)
 
   return (
-    <div className="slide closing">
+    <div className="slide closing closing-hero">
+      <img src={assets.cerro} alt="" className="intro-bg" draggable={false} />
+      <div className="intro-overlay" />
       <motion.div
-        className="closing-inner"
-        initial={{ opacity: 0, y: 24 }}
+        className="intro-content closing-hero-content"
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        <motion.h1
-          initial={{ scale: 0.92, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          {s.title}
-        </motion.h1>
+        <div className="intro-brand">
+          <span className="brand-dot" />
+          <span>PUNA TECH 2026</span>
+        </div>
 
-        <motion.div
-          className="closing-qr-slot"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.25, duration: 0.5 }}
-        >
+        <h1 className="intro-title">{s.title}</h1>
+
+        <div className="closing-qr-slot closing-qr-slot--hero">
           {!qrLoaded && (
             <div className="closing-qr-placeholder">
               <span className="closing-qr-icon" aria-hidden>⌗</span>
-              <span className="closing-qr-label">Redes de contacto</span>
+              <span className="closing-qr-label">Tu QR de contacto</span>
               <span className="closing-qr-hint">public/contacto-qr.png</span>
             </div>
           )}
           <img
             src={assets.closing.qr}
-            alt="QR — redes de contacto"
+            alt="QR — contacto"
             className="closing-qr"
             onLoad={() => setQrLoaded(true)}
             onError={() => setQrLoaded(false)}
             style={{ display: qrLoaded ? 'block' : 'none' }}
           />
-        </motion.div>
+        </div>
 
-        <motion.p
-          className="closing-url"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          🌐 {s.footer}
-        </motion.p>
-        <motion.div
-          className="closing-tag"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          {s.tag}
-        </motion.div>
-
-        <motion.footer
-          className="closing-footer"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-        >
-          <div className="closing-logo-wrap">
-            <img
-              src={assets.closing.punatech.src}
-              alt={assets.closing.punatech.alt}
-              className="closing-logo closing-logo-puna"
-            />
-          </div>
-          <div className="closing-logo-wrap">
-            <img
-              src={assets.closing.saltadev.src}
-              alt={assets.closing.saltadev.alt}
-              className="closing-logo closing-logo-salta"
-            />
-          </div>
-        </motion.footer>
+        {s.footer && (
+          <p className="intro-subtitle closing-hero-url">{s.footer}</p>
+        )}
       </motion.div>
     </div>
   )
@@ -464,123 +327,198 @@ function Closing({ s }: { s: Slide }) {
 
 function LayoutRenderer({ slide }: { slide: Slide }) {
   switch (slide.layout) {
-    case 'cover':    return <Cover s={slide} />
-    case 'speaker':  return <Speaker s={slide} />
-    case 'bridge':   return <Bridge s={slide} />
+    case 'speaker': return <Speaker s={slide} />
+    case 'bridge': return <Bridge s={slide} />
     case 'comparison': return <Comparison s={slide} />
-    case 'grid':    return <GridSlide s={slide} />
+    case 'grid': return <GridSlide s={slide} />
     case 'bullets': return <Bullets s={slide} />
-    case 'flow':    return <Flow s={slide} />
-    case 'apps':    return <Apps s={slide} />
+    case 'flow': return <Flow s={slide} />
+    case 'apps': return <Apps s={slide} />
     case 'no-code': return <NoCode s={slide} />
-    case 'future':  return <Future s={slide} />
+    case 'future': return <Future s={slide} />
     case 'closing': return <Closing s={slide} />
-    default:        return <div className="slide"><h1>{slide.title}</h1></div>
+    default: return <div className="slide slide-canva"><h2>{slide.title}</h2></div>
   }
 }
 
-// ── Navegación ──
 export default function CharlaPage() {
+  const mainRef = useRef<HTMLElement>(null)
+  const touchStart = useRef<{ x: number; y: number } | null>(null)
+
+  const [showIntro, setShowIntro] = useState(true)
   const [current, setCurrent] = useState(0)
   const [dir, setDir] = useState(1)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [showUi, setShowUi] = useState(true)
+
+  const startPresentation = useCallback(() => setShowIntro(false), [])
 
   const prev = useCallback(() => {
-    if (current > 0) { setDir(-1); setCurrent(c => c - 1) }
-  }, [current])
+    if (showIntro) return
+    if (current > 0) {
+      setDir(-1)
+      setCurrent(c => c - 1)
+    } else {
+      setShowIntro(true)
+    }
+  }, [current, showIntro])
 
   const next = useCallback(() => {
-    if (current < slides.length - 1) { setDir(1); setCurrent(c => c + 1) }
-  }, [current])
-
-  const toggleFullscreen = useCallback(() => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen?.()
-    } else {
-      document.exitFullscreen?.()
+    if (showIntro) {
+      startPresentation()
+      return
     }
+    if (current < slides.length - 1) {
+      setDir(1)
+      setCurrent(c => c + 1)
+    }
+  }, [current, showIntro, startPresentation])
+
+  const toggleFullscreen = useCallback(async () => {
+    const el = mainRef.current
+    if (!el) return
+    try {
+      if (!document.fullscreenElement) await el.requestFullscreen()
+      else await document.exitFullscreen()
+    } catch { /* noop */ }
   }, [])
 
   useEffect(() => {
-    const onFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement)
+    const onFullscreenChange = () => {
+      setIsFullscreen(document.fullscreenElement === mainRef.current)
+      setShowUi(true)
+    }
     document.addEventListener('fullscreenchange', onFullscreenChange)
     return () => document.removeEventListener('fullscreenchange', onFullscreenChange)
   }, [])
 
   useEffect(() => {
+    if (!isFullscreen || showIntro) return
+    const hide = window.setTimeout(() => setShowUi(false), 2800)
+    return () => window.clearTimeout(hide)
+  }, [isFullscreen, current, showUi, showIntro])
+
+  useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); next() }
-      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp') { e.preventDefault(); prev() }
+      if (showIntro) {
+        if ([' ', 'Enter', 'ArrowRight', 'ArrowDown'].includes(e.key)) {
+          e.preventDefault()
+          startPresentation()
+        }
+        return
+      }
+      if (['ArrowRight', 'ArrowDown', ' '].includes(e.key)) { e.preventDefault(); next() }
+      if (['ArrowLeft', 'ArrowUp'].includes(e.key)) { e.preventDefault(); prev() }
       if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggleFullscreen() }
+      if (e.key === 'Escape' && isFullscreen) setShowUi(true)
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [next, prev, toggleFullscreen])
+  }, [next, prev, toggleFullscreen, isFullscreen, showIntro, startPresentation])
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.changedTouches[0]
+    touchStart.current = { x: t.clientX, y: t.clientY }
+  }
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStart.current) return
+    const t = e.changedTouches[0]
+    const dx = t.clientX - touchStart.current.x
+    const dy = t.clientY - touchStart.current.y
+    touchStart.current = null
+    if (showIntro) {
+      if (Math.abs(dx) < 24 && Math.abs(dy) < 24) startPresentation()
+      return
+    }
+    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return
+    if (dx < 0) next()
+    else prev()
+  }
 
   const variant = {
-    enter: (d: number) => ({ opacity: 0, x: d > 0 ? 60 : -60 }),
+    enter: (d: number) => ({ opacity: 0, x: d > 0 ? 32 : -32 }),
     center: { opacity: 1, x: 0 },
-    exit: (d: number) => ({ opacity: 0, x: d > 0 ? -60 : 60 }),
+    exit: (d: number) => ({ opacity: 0, x: d > 0 ? -32 : 32 }),
   }
 
   return (
-    <main className="charla">
-      {/* Ambiente agro — topografía + grain */}
-      <div className="agro-ambient" aria-hidden>
-        <div className="agro-topo" />
-        <div className="agro-grain" />
-      </div>
+    <main
+      ref={mainRef}
+      className={`charla charla--slides${showIntro ? ' charla--intro' : ''}${isFullscreen ? ' charla--fullscreen' : ''}${showUi ? ' charla--show-ui' : ''}`}
+      onMouseMove={() => isFullscreen && setShowUi(true)}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
+      <AnimatePresence>
+        {showIntro && <IntroScreen onStart={startPresentation} key="intro" />}
+      </AnimatePresence>
 
-      {/* Branding */}
-      <header className="charla-brand">
-        <span className="brand-dot" />
-        <span className="brand-name">PUNA TECH</span>
-        <span className="brand-sep">·</span>
-        <span className="brand-topic">IA en el agro</span>
-      </header>
+      {!showIntro && (
+        <div className="charla-ui">
+          <header className="charla-brand">
+            <span className="brand-dot" />
+            <span className="brand-name">PUNA TECH</span>
+            <span className="brand-sep">·</span>
+            <span className="brand-topic">IA en el agro</span>
+          </header>
 
-      {/* Nav */}
-      <nav className="charla-nav">
-        <button onClick={prev} disabled={current === 0} className="nav-btn" aria-label="Slide anterior">
-          ←
-        </button>
-        <div className="nav-dots">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              className={`dot ${i === current ? 'active' : ''}`}
-              onClick={() => { setDir(i > current ? 1 : -1); setCurrent(i) }}
-              aria-label={`Ir a slide ${i + 1}`}
+          <a href={assets.pdf} target="_blank" rel="noopener noreferrer" className="pdf-link" title="Abrir PDF original">
+            PDF
+          </a>
+
+          <button
+            className="fullscreen-btn"
+            onClick={toggleFullscreen}
+            aria-label={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
+            title="Pantalla completa (F)"
+          >
+            {isFullscreen ? '⤡' : '⤢'}
+          </button>
+
+          <div className="slide-counter">
+            <span className="counter-num">{String(current + 1).padStart(2, '0')}</span>
+            <span className="counter-sep">/</span>
+            <span className="counter-total">{String(slides.length).padStart(2, '0')}</span>
+          </div>
+
+          <div className="keyboard-hint">← → navegar · F pantalla completa · swipe en móvil</div>
+
+          <nav className="charla-nav">
+            <button onClick={prev} className="nav-btn" aria-label="Slide anterior">←</button>
+            <div className="nav-dots">
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  className={`dot ${i === current ? 'active' : ''}`}
+                  onClick={() => { setDir(i > current ? 1 : -1); setCurrent(i) }}
+                  aria-label={`Ir a slide ${i + 1}`}
+                />
+              ))}
+            </div>
+            <button onClick={next} disabled={current === slides.length - 1} className="nav-btn" aria-label="Slide siguiente">→</button>
+          </nav>
+
+          <div className="progress-bar">
+            <motion.div
+              className="progress-fill"
+              animate={{ width: `${((current + 1) / slides.length) * 100}%` }}
+              transition={{ duration: 0.4, ease: 'easeOut' }}
             />
-          ))}
+          </div>
         </div>
-        <button onClick={next} disabled={current === slides.length - 1} className="nav-btn" aria-label="Slide siguiente">
-          →
-        </button>
-      </nav>
+      )}
 
-      {/* Fullscreen toggle */}
-      <button
-        className="fullscreen-btn"
-        onClick={toggleFullscreen}
-        aria-label={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
-        title="Pantalla completa (F)"
-      >
-        {isFullscreen ? '⤡' : '⤢'}
-      </button>
+      <div className={`slides-viewport${showIntro ? ' slides-viewport--hidden' : ''}`}>
+        <button type="button" className="tap-zone tap-zone-prev" onClick={prev} aria-label="Slide anterior" />
+        <button
+          type="button"
+          className="tap-zone tap-zone-next"
+          onClick={next}
+          aria-label="Slide siguiente"
+          disabled={current === slides.length - 1}
+        />
 
-      {/* Keyboard hint */}
-      <div className="keyboard-hint">← → navegar · F pantalla completa</div>
-
-      {/* Slide counter */}
-      <div className="slide-counter">
-        <span className="counter-num">{String(current + 1).padStart(2, '0')}</span>
-        <span className="counter-sep">/</span>
-        <span className="counter-total">{String(slides.length).padStart(2, '0')}</span>
-      </div>
-
-      {/* Slides */}
-      <div className="slides-viewport">
         <AnimatePresence mode="wait" custom={dir}>
           <motion.div
             key={current}
@@ -589,20 +527,12 @@ export default function CharlaPage() {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            className="slide-motion-wrap"
           >
-            <LayoutRenderer slide={slides[current]} />
+            {!showIntro && <LayoutRenderer slide={slides[current]} />}
           </motion.div>
         </AnimatePresence>
-      </div>
-
-      {/* Progress bar */}
-      <div className="progress-bar">
-        <motion.div
-          className="progress-fill"
-          animate={{ width: `${((current + 1) / slides.length) * 100}%` }}
-          transition={{ duration: 0.4, ease: 'easeOut' }}
-        />
       </div>
     </main>
   )

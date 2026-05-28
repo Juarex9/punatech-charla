@@ -14,14 +14,8 @@ export interface Slide {
   note?: string
 }
 
+/** 10 slides de contenido — cover en intro con cerro.png */
 export const slides: Slide[] = [
-  {
-    n: 1,
-    layout: 'cover',
-    title: 'Transformando el agro con agentes de IA',
-    subtitle: 'AI & Blockchain en el agro',
-    tag: 'Puna Tech 2026 · Salta',
-  },
   {
     n: 2,
     layout: 'speaker',
@@ -29,13 +23,15 @@ export const slides: Slide[] = [
     speaker: 'Agustín Juárez',
     role: 'Software Developer & AI Engineer',
     meta: 'SaltaDev · Comunidad tech de Salta',
-    subtitle: 'Me dedico a desarrollar software e implementar soluciones con agentes de IA. En SaltaDev ayudo a organizar Puna Tech y a conectar a quienes quieren construir con tecnología en la provincia.',
+    subtitle:
+      'Especialista en desarrollo de software e implementación de soluciones con agentes de IA.',
   },
   {
     n: 3,
     layout: 'bridge',
     title: 'IA, BLOCKCHAIN?',
-    subtitle: 'Suenan futuristas. Pero pueden estar más cerca de nosotros de lo que pensamos.',
+    subtitle:
+      'Suenan futuristas. Pero pueden estar más cerca de nosotros de lo que pensamos.',
     tag: 'Tecnologías que ya escuchamos · aplicables al campo',
   },
   {
@@ -43,18 +39,8 @@ export const slides: Slide[] = [
     layout: 'comparison',
     title: 'IA vs Agente de IA',
     cols: [
-      [
-        'Es REACTIVO',
-        'Entrega de datos PASIVA',
-        'Alcance LIMITADO',
-        'Uso muy comercial',
-      ],
-      [
-        'PROACTIVO',
-        'Ejecución de tareas ACTIVA',
-        'Razonamiento',
-        'Tiene memoria',
-      ],
+      ['Es REACTIVO', 'Entrega de datos PASIVA', 'Alcance LIMITADO', 'Uso muy comercial'],
+      ['PROACTIVO', 'Ejecución de tareas ACTIVA', 'Razonamiento', 'Tiene memoria'],
     ],
   },
   {
@@ -107,10 +93,10 @@ export const slides: Slide[] = [
     title: '¿Y si no sé programar?',
     subtitle: 'No se necesita ser programador. La clave es saber preguntar bien.',
     items: [
-      ['🌿', 'Asistente de diagnóstico'],
-      ['🌤️', 'Consultor de clima'],
-      ['💧', 'Calculadora de insumos'],
-      ['💰', 'Buscador de precios'],
+      ['Asistente de diagnóstico', ''],
+      ['Consultor de clima', ''],
+      ['Calculadora de insumos', ''],
+      ['Buscador de precios', ''],
     ],
   },
   {
