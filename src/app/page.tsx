@@ -13,6 +13,24 @@ function SlideTitle({ children, center }: { children: React.ReactNode; center?: 
   )
 }
 
+function IntroSlideContent({ showCta = true }: { showCta?: boolean }) {
+  return (
+    <>
+      <img src={assets.cerro} alt="" className="intro-bg" draggable={false} />
+      <div className="intro-overlay" />
+      <div className="intro-content">
+        <div className="intro-brand">
+          <span className="brand-dot" />
+          <span>PUNA TECH 2026</span>
+        </div>
+        <h1 className="intro-title">{assets.intro.title}</h1>
+        <p className="intro-subtitle">{assets.intro.subtitle}</p>
+        {showCta && <span className="intro-cta">Click o espacio para comenzar</span>}
+      </div>
+    </>
+  )
+}
+
 function IntroScreen({ onStart }: { onStart: () => void }) {
   return (
     <motion.button
@@ -25,17 +43,7 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       aria-label="Comenzar presentación"
     >
-      <img src={assets.cerro} alt="" className="intro-bg" draggable={false} />
-      <div className="intro-overlay" />
-      <div className="intro-content">
-        <div className="intro-brand">
-          <span className="brand-dot" />
-          <span>PUNA TECH 2026</span>
-        </div>
-        <h1 className="intro-title">{assets.intro.title}</h1>
-        <p className="intro-subtitle">{assets.intro.subtitle}</p>
-        <span className="intro-cta">Click o espacio para comenzar</span>
-      </div>
+      <IntroSlideContent />
     </motion.button>
   )
 }
@@ -507,6 +515,9 @@ export default function CharlaPage() {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [showUi, setShowUi] = useState(true)
   const [exportingPpt, setExportingPpt] = useState(false)
+  const [exportingPdf, setExportingPdf] = useState(false)
+  const [pdfCaptureStep, setPdfCaptureStep] = useState<'intro' | number | null>(null)
+  const pdfCaptureRef = useRef<HTMLDivElement>(null)
 
   const handleExportPpt = useCallback(async () => {
     if (exportingPpt) return
@@ -521,6 +532,35 @@ export default function CharlaPage() {
       setExportingPpt(false)
     }
   }, [exportingPpt])
+
+  const handleExportPdf = useCallback(async () => {
+    if (exportingPdf || exportingPpt) return
+    setExportingPdf(true)
+
+    try {
+      const { captureElement, buildPdfFromCanvases } = await import('@/lib/exportPdf')
+      const steps: Array<'intro' | number> = ['intro', ...slides.map((_, index) => index)]
+      const canvases: HTMLCanvasElement[] = []
+
+      for (const step of steps) {
+        setPdfCaptureStep(step)
+        await new Promise((resolve) => setTimeout(resolve, 600))
+
+        const frame = pdfCaptureRef.current
+        if (!frame) continue
+
+        canvases.push(await captureElement(frame))
+      }
+
+      await buildPdfFromCanvases(canvases)
+    } catch (err) {
+      console.error('Error al exportar PDF:', err)
+      window.alert('No se pudo exportar el PDF. Probá de nuevo.')
+    } finally {
+      setPdfCaptureStep(null)
+      setExportingPdf(false)
+    }
+  }, [exportingPdf, exportingPpt])
 
   const startPresentation = useCallback(() => setShowIntro(false), [])
 
@@ -616,7 +656,7 @@ export default function CharlaPage() {
   return (
     <main
       ref={mainRef}
-      className={`charla charla--slides${showIntro ? ' charla--intro' : ''}${isFullscreen ? ' charla--fullscreen' : ''}${showUi ? ' charla--show-ui' : ''}`}
+      className={`charla charla--slides${showIntro ? ' charla--intro' : ''}${isFullscreen ? ' charla--fullscreen' : ''}${showUi ? ' charla--show-ui' : ''}${exportingPdf ? ' charla--exporting-pdf' : ''}`}
       onMouseMove={() => isFullscreen && setShowUi(true)}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
@@ -644,9 +684,15 @@ export default function CharlaPage() {
             {exportingPpt ? '…' : 'Exportar como PPT'}
           </button>
 
-          <a href={assets.gammaPdf} target="_blank" rel="noopener noreferrer" className="pdf-link" title="Abrir PDF Gamma">
-            PDF
-          </a>
+          <button
+            type="button"
+            className="pdf-link"
+            onClick={handleExportPdf}
+            disabled={exportingPdf || exportingPpt}
+            title="Descargar presentación como PDF"
+          >
+            {exportingPdf ? '…' : 'Exportar PDF'}
+          </button>
 
           <button
             className="fullscreen-btn"
@@ -715,6 +761,20 @@ export default function CharlaPage() {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {exportingPdf && pdfCaptureStep !== null && (
+        <div className="pdf-export-layer" aria-hidden>
+          <div ref={pdfCaptureRef} className="pdf-export-frame">
+            {pdfCaptureStep === 'intro' ? (
+              <div className="intro-export">
+                <IntroSlideContent showCta={false} />
+              </div>
+            ) : (
+              <LayoutRenderer slide={slides[pdfCaptureStep]} />
+            )}
+          </div>
+        </div>
+      )}
     </main>
   )
 }
