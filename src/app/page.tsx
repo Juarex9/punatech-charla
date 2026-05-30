@@ -506,6 +506,21 @@ export default function CharlaPage() {
   const [dir, setDir] = useState(1)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [showUi, setShowUi] = useState(true)
+  const [exportingPpt, setExportingPpt] = useState(false)
+
+  const handleExportPpt = useCallback(async () => {
+    if (exportingPpt) return
+    setExportingPpt(true)
+    try {
+      const { exportPresentationAsPptx } = await import('@/lib/exportPptx')
+      await exportPresentationAsPptx()
+    } catch (err) {
+      console.error('Error al exportar PPT:', err)
+      window.alert('No se pudo exportar el PPT. Probá de nuevo.')
+    } finally {
+      setExportingPpt(false)
+    }
+  }, [exportingPpt])
 
   const startPresentation = useCallback(() => setShowIntro(false), [])
 
@@ -618,6 +633,16 @@ export default function CharlaPage() {
             <span className="brand-sep">·</span>
             <span className="brand-topic">IA en el agro</span>
           </header>
+
+          <button
+            type="button"
+            className="export-ppt-link"
+            onClick={handleExportPpt}
+            disabled={exportingPpt}
+            title="Descargar presentación como PowerPoint"
+          >
+            {exportingPpt ? '…' : 'Exportar como PPT'}
+          </button>
 
           <a href={assets.gammaPdf} target="_blank" rel="noopener noreferrer" className="pdf-link" title="Abrir PDF Gamma">
             PDF

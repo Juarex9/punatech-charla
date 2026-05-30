@@ -1534,6 +1534,7 @@ body {
   .fullscreen-btn { right: 1rem; top: 1rem; }
   .slide-counter { right: 1rem; top: 3.5rem; }
   .pdf-link { right: 3.5rem; top: max(0.75rem, env(safe-area-inset-top)); font-size: .55rem; }
+  .export-ppt-link { display: none; }
 }
 
 @media (max-width: 768px) and (orientation: landscape) {
@@ -3224,6 +3225,35 @@ body {
   background: rgba(6, 4, 4, 0.75);
   backdrop-filter: blur(8px);
   transition: color 0.2s, border-color 0.2s;
+}
+
+.export-ppt-link {
+  position: fixed;
+  top: 1.25rem;
+  right: 13.75rem;
+  z-index: 100;
+  font-family: var(--f-mono);
+  font-size: .6rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--c-dim);
+  padding: .45rem .7rem;
+  border-radius: 6px;
+  border: 1px solid var(--c-border);
+  background: rgba(6, 4, 4, 0.75);
+  backdrop-filter: blur(8px);
+  transition: color 0.2s, border-color 0.2s, opacity 0.2s;
+  cursor: pointer;
+}
+
+.export-ppt-link:hover:not(:disabled) {
+  color: var(--c-high);
+  border-color: var(--c-agro);
+}
+
+.export-ppt-link:disabled {
+  opacity: 0.55;
+  cursor: wait;
 }
 
 .pdf-link:hover {
