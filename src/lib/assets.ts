@@ -1,9 +1,15 @@
 export const assets = {
   pdf: '/punatech-presentation.pdf',
+  gammaPdf: '/IA-en-el-Agro-Tecnologia-al-Servicio-del-Campo.pdf',
   cerro: '/cerro.png',
+  agent: '/ia-agent.webp',
+  agrotech: '/agrotech.webp',
+  satellite: '/satelite.webp',
+  futureAgro: '/futuro-agro.webp',
   intro: {
     title: 'Transformando el agro con agentes de IA',
-    subtitle: 'AI & Blockchain en el agro',
+    subtitle:
+      'Inteligencia artificial, satélites y blockchain.',
   },
   speaker: '/mirando-al-horizonte.jpg',
   bridge: {
@@ -28,6 +34,6 @@ export const assets = {
     background: '/cerro.png',
     punatech: { src: '/punatech.jpg', alt: 'Puna Tech' },
     saltadev: { src: '/saltadev.webp', alt: 'SaltaDev' },
-    qr: '/contacto-qr.png',
+    qr: '/contacto.png',
   },
 } as const

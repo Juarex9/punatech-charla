@@ -73,14 +73,6 @@ function Speaker({ s }: { s: Slide }) {
 }
 
 function Bridge({ s }: { s: Slide }) {
-  const logos = [
-    { ...assets.bridge.ia[1], pos: 'pos-claude' },
-    { ...assets.bridge.ia[0], pos: 'pos-chatgpt' },
-    { ...assets.bridge.ia[2], pos: 'pos-gemini' },
-    { ...assets.bridge.blockchain[1], pos: 'pos-ethereum' },
-    { ...assets.bridge.blockchain[0], pos: 'pos-bitcoin' },
-  ]
-
   return (
     <div className="slide slide-canva bridge">
       <motion.div
@@ -92,12 +84,27 @@ function Bridge({ s }: { s: Slide }) {
         <SlideTitle center>{s.title}</SlideTitle>
         {s.subtitle && <p className="bridge-canva-sub">{s.subtitle}</p>}
         {s.tag && <p className="bridge-canva-tag">{s.tag}</p>}
-        <div className="bridge-logos-scatter">
-          {logos.map((img) => (
-            <div key={img.src} className={`bridge-scatter-item ${img.pos}`}>
-              <img src={img.src} alt={img.alt} className="bridge-scatter-logo" />
+        <div className="bridge-logos-grid">
+          <div className="bridge-logos-group">
+            <span className="bridge-logos-label">Inteligencia artificial</span>
+            <div className="bridge-logos-row">
+              {assets.bridge.ia.map((img) => (
+                <div key={img.src} className="bridge-logo-cell">
+                  <img src={img.src} alt={img.alt} className="bridge-logo-img" />
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          <div className="bridge-logos-group">
+            <span className="bridge-logos-label">Blockchain</span>
+            <div className="bridge-logos-row">
+              {assets.bridge.blockchain.map((img) => (
+                <div key={img.src} className="bridge-logo-cell">
+                  <img src={img.src} alt={img.alt} className="bridge-logo-img" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </motion.div>
     </div>
@@ -106,11 +113,12 @@ function Bridge({ s }: { s: Slide }) {
 
 function Comparison({ s }: { s: Slide }) {
   const logos = [assets.comparison.chatbot, assets.comparison.agent]
-  const names = ['ChatGPT', 'OpenClaw']
+  const names = s.colNames ?? ['IA tradicional', 'Agente de IA']
 
   return (
     <div className="slide slide-canva comparison">
       <SlideTitle>{s.title}</SlideTitle>
+      {s.subtitle && <p className="comparison-subtitle">{s.subtitle}</p>}
       <div className="comparison-grid">
         {s.cols?.map((col, ci) => (
           <motion.div
@@ -120,11 +128,13 @@ function Comparison({ s }: { s: Slide }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: ci * 0.12, duration: 0.45 }}
           >
-            <img
-              src={logos[ci].src}
-              alt={logos[ci].alt}
-              className={`comparison-logo-canva ${ci === 1 ? 'logo-agent' : ''}`}
-            />
+            <div className="comparison-logo-slot">
+              <img
+                src={logos[ci].src}
+                alt={logos[ci].alt}
+                className={`comparison-logo-canva ${ci === 1 ? 'logo-agent' : ''}`}
+              />
+            </div>
             <p className="comparison-name">{names[ci]}</p>
             <ul className="comparison-list">
               {col.map((item) => (
@@ -138,20 +148,60 @@ function Comparison({ s }: { s: Slide }) {
   )
 }
 
+function WhyToday({ s }: { s: Slide }) {
+  return (
+    <div className="slide slide-canva why-today">
+      <motion.div
+        className="why-today-inner"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55 }}
+      >
+        <div className="canva-split canva-split--media-left">
+          <div className="canva-split-media canva-split-media--tall">
+            <img src="/ia-en-agro" alt="" className="canva-side-photo canva-side-photo--contain" />
+          </div>
+          <div className="canva-split-text">
+            <SlideTitle>{s.title}</SlideTitle>
+            {s.subtitle && <p className="why-today-lead">{s.subtitle}</p>}
+          </div>
+        </div>
+        <div className="benefit-cards">
+          {s.benefits?.map(([title, desc], i) => (
+            <motion.div
+              key={title}
+              className="benefit-card"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 + i * 0.1, duration: 0.45 }}
+            >
+              <h3 className="benefit-card-title">{title}</h3>
+              <p className="benefit-card-desc">{desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
 function GridSlide({ s }: { s: Slide }) {
   return (
     <div className="slide slide-canva grid-slide">
       <div className="canva-split canva-split--media-left">
         <div className="canva-split-media canva-split-media--tall">
-          <img src={assets.cerro} alt="" className="canva-side-photo" />
+          <img src={assets.agrotech} alt="" className="canva-side-photo canva-side-photo--contain" />
         </div>
         <div className="canva-split-text">
           <SlideTitle>{s.title}</SlideTitle>
           <ul className="canva-numbered-list">
-            {s.items?.map(([num, label]) => (
+            {s.items?.map(([num, label, desc]) => (
               <li key={num}>
                 <span className="canva-num">{num}</span>
-                <span>{label}</span>
+                <span className="canva-list-body">
+                  <span className="canva-list-label">{label}</span>
+                  {desc && <span className="canva-list-desc">{desc}</span>}
+                </span>
               </li>
             ))}
           </ul>
@@ -161,25 +211,68 @@ function GridSlide({ s }: { s: Slide }) {
   )
 }
 
+function Versus({ s }: { s: Slide }) {
+  const names = s.colNames ?? ['Drones', 'Satélites']
+
+  return (
+    <div className="slide slide-canva versus">
+      <div className="canva-split canva-split--media-left">
+        <div className="canva-split-media canva-split-media--tall">
+          <img src={assets.satellite} alt="" className="canva-side-photo canva-side-photo--contain" />
+        </div>
+        <div className="canva-split-text">
+          <SlideTitle>{s.title}</SlideTitle>
+          <div className="versus-grid">
+            {s.cols?.map((col, ci) => (
+              <motion.div
+                key={ci}
+                className={`versus-col ${ci === 0 ? 'versus-col--muted' : 'versus-col--highlight'}`}
+                initial={{ opacity: 0, x: ci === 0 ? -16 : 16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: ci * 0.12, duration: 0.45 }}
+              >
+                <h3 className="versus-col-title">{names[ci]}</h3>
+                <ul className="versus-list">
+                  {col.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+            <span className="versus-badge" aria-hidden>VS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function Bullets({ s }: { s: Slide }) {
   return (
     <div className="slide slide-canva bullets">
-      <SlideTitle>{s.title}</SlideTitle>
-      <div className="canva-split canva-split--bullets">
-        <div className="canva-split-media">
+      <div className="canva-split canva-split--media-left">
+        <div className="canva-split-media canva-spalit-media--tall canva-split-media--illustration">
           <img
             src={assets.blockchain.hero.src}
             alt={assets.blockchain.hero.alt}
-            className="blockchain-img-canva"
+            className="canva-side-photo canva-side-photo--contain"
           />
         </div>
-        <ul className="canva-bullet-list">
-          {s.items?.map(([title, desc]) => (
-            <li key={title}>
-              <strong>{title}:</strong> {desc}
-            </li>
-          ))}
-        </ul>
+        <div className="canva-split-text">
+          <SlideTitle>{s.title}</SlideTitle>
+          {s.subtitle && <p className="bullets-lead">{s.subtitle}</p>}
+          <ul className="canva-numbered-list">
+            {s.items?.map(([title, desc], i) => (
+              <li key={title}>
+                <span className="canva-num">{String(i + 1).padStart(2, '0')}</span>
+                <span className="canva-list-body">
+                  <span className="canva-list-label">{title}</span>
+                  {desc && <span className="canva-list-desc">{desc}</span>}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   )
@@ -202,7 +295,7 @@ function Flow({ s }: { s: Slide }) {
           {s.note && <p className="flow-note-canva">{s.note}</p>}
         </div>
         <div className="canva-split-media canva-split-media--tall">
-          <img src={assets.cerro} alt="" className="canva-side-photo" />
+          <img src={assets.agent} alt="" className="canva-side-photo canva-side-photo--contain" />
         </div>
       </div>
     </div>
@@ -210,44 +303,102 @@ function Flow({ s }: { s: Slide }) {
 }
 
 function Apps({ s }: { s: Slide }) {
+  const appImages = ['/Zafra.png', '/VitistTrust.png']
+
   return (
     <div className="slide slide-canva apps">
-      <div className="canva-split canva-split--media-left">
-        <div className="canva-split-text">
-          <SlideTitle>{s.title}</SlideTitle>
-          <ul className="canva-numbered-list canva-numbered-list--large">
-            {s.items?.map(([name], i) => (
-              <li key={name}>
+      <div className="apps-inner">
+        <SlideTitle center>{s.title}</SlideTitle>
+        <div className="apps-showcase">
+          {s.items?.map(([name, desc], i) => (
+            <figure key={name} className="apps-showcase-item">
+              <div className="apps-showcase-frame">
+                <img src={appImages[i]} alt={name} className="apps-showcase-img" />
+              </div>
+              <figcaption className="apps-showcase-caption">
                 <span className="canva-num">{String(i + 1).padStart(2, '0')}</span>
-                <span>{name}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="canva-split-media canva-split-media--stack">
-          <img src={assets.cerro} alt="" className="canva-side-photo canva-side-photo--half" />
-          <img src={assets.speaker} alt="" className="canva-side-photo canva-side-photo--half" />
+                <span className="apps-showcase-copy">
+                  <span className="apps-showcase-name">{name}</span>
+                  {desc && <span className="apps-showcase-desc">{desc}</span>}
+                </span>
+              </figcaption>
+            </figure>
+          ))}
         </div>
       </div>
     </div>
   )
 }
 
-function NoCode({ s }: { s: Slide }) {
+function Region({ s }: { s: Slide }) {
   return (
-    <div className="slide slide-canva no-code">
-      <SlideTitle>{s.title}</SlideTitle>
-      <div className="canva-split canva-split--media-left">
-        <div className="canva-split-media">
-          <img src={assets.cerro} alt="" className="canva-side-photo" />
-        </div>
-        <ul className="canva-simple-list">
-          {s.items?.map(([label]) => (
-            <li key={label}>{label}</li>
+    <div className="slide slide-canva region">
+      <motion.div
+        className="region-inner"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55 }}
+      >
+        <SlideTitle center>{s.title}</SlideTitle>
+        {s.subtitle && <p className="region-lead">{s.subtitle}</p>}
+        <div className="region-pillars">
+          {s.cols?.map(([title, desc], i) => (
+            <motion.div
+              key={title}
+              className="region-pillar"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + i * 0.12, duration: 0.45 }}
+            >
+              <span className="region-pillar-num">{String(i + 1).padStart(2, '0')}</span>
+              <h3 className="region-pillar-title">{title}</h3>
+              <p className="region-pillar-desc">{desc}</p>
+            </motion.div>
           ))}
-        </ul>
-      </div>
-      {s.subtitle && <p className="no-code-footer">{s.subtitle}</p>}
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
+function Start({ s }: { s: Slide }) {
+  return (
+    <div className="slide slide-canva start">
+      <motion.div
+        className="start-inner"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55 }}
+      >
+        <SlideTitle center>{s.title}</SlideTitle>
+        <div className="start-timeline">
+          {s.steps?.map(([title, desc], i) => (
+            <motion.div
+              key={title}
+              className="start-step"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + i * 0.12, duration: 0.45 }}
+            >
+              <span className="canva-num">{String(i + 1).padStart(2, '0')}</span>
+              <div className="start-step-body">
+                <h3 className="start-step-title">{title}</h3>
+                <p className="start-step-desc">{desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        {s.footer && <p className="start-footer">{s.footer}</p>}
+        <div className="start-no-code">
+          <h3 className="start-no-code-title">¿Y si no sé programar?</h3>
+          {s.subtitle && <p className="start-no-code-lead">{s.subtitle}</p>}
+          <div className="start-tools">
+            {s.tools?.map((tool) => (
+              <span key={tool} className="start-tool-chip">{tool}</span>
+            ))}
+          </div>
+        </div>
+      </motion.div>
     </div>
   )
 }
@@ -257,10 +408,11 @@ function Future({ s }: { s: Slide }) {
     <div className="slide slide-canva future">
       <div className="canva-split canva-split--media-left">
         <div className="canva-split-media canva-split-media--tall">
-          <img src={assets.cerro} alt="" className="canva-side-photo" />
+          <img src={assets.futureAgro} alt="" className="canva-side-photo canva-side-photo--contain" />
         </div>
         <div className="canva-split-text">
           <SlideTitle>{s.title}</SlideTitle>
+          {s.subtitle && <p className="future-subtitle">{s.subtitle}</p>}
           <div className="future-cols">
             {s.cols?.map((col) => (
               <div key={col[0]} className="future-col-canva">
@@ -273,6 +425,7 @@ function Future({ s }: { s: Slide }) {
               </div>
             ))}
           </div>
+          {s.note && <p className="future-note">{s.note}</p>}
         </div>
       </div>
     </div>
@@ -304,7 +457,7 @@ function Closing({ s }: { s: Slide }) {
             <div className="closing-qr-placeholder">
               <span className="closing-qr-icon" aria-hidden>⌗</span>
               <span className="closing-qr-label">Tu QR de contacto</span>
-              <span className="closing-qr-hint">public/contacto-qr.png</span>
+              <span className="closing-qr-hint">public/contacto.png</span>
             </div>
           )}
           <img
@@ -329,12 +482,15 @@ function LayoutRenderer({ slide }: { slide: Slide }) {
   switch (slide.layout) {
     case 'speaker': return <Speaker s={slide} />
     case 'bridge': return <Bridge s={slide} />
+    case 'why-today': return <WhyToday s={slide} />
     case 'comparison': return <Comparison s={slide} />
     case 'grid': return <GridSlide s={slide} />
+    case 'versus': return <Versus s={slide} />
     case 'bullets': return <Bullets s={slide} />
     case 'flow': return <Flow s={slide} />
+    case 'region': return <Region s={slide} />
     case 'apps': return <Apps s={slide} />
-    case 'no-code': return <NoCode s={slide} />
+    case 'start': return <Start s={slide} />
     case 'future': return <Future s={slide} />
     case 'closing': return <Closing s={slide} />
     default: return <div className="slide slide-canva"><h2>{slide.title}</h2></div>
@@ -463,7 +619,7 @@ export default function CharlaPage() {
             <span className="brand-topic">IA en el agro</span>
           </header>
 
-          <a href={assets.pdf} target="_blank" rel="noopener noreferrer" className="pdf-link" title="Abrir PDF original">
+          <a href={assets.gammaPdf} target="_blank" rel="noopener noreferrer" className="pdf-link" title="Abrir PDF Gamma">
             PDF
           </a>
 
